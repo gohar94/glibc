@@ -2033,6 +2033,44 @@ open_path (const char *name, size_t namelen, int mode,
   return -1;
 }
 
+/* Search for a shared object in a given namespace.  */
+struct link_map *
+_dl_find_dso (const char *name, Lmid_t nsid)
+{
+  struct link_map *l;
+
+  for (l = GL(dl_ns)[nsid]._ns_loaded; l != NULL; l = l->l_next)
+    {
+      /* If the requested name matches the soname of a loaded object,
+	 use that object.  Elide this check for names that have not
+	 yet been opened.  */
+      if (__glibc_unlikely ((l->l_faked | l->l_removed) != 0))
+	continue;
+      if (!_dl_name_match_p (name, l))
+	{
+	  const char *soname;
+
+	  if (__glibc_likely (l->l_soname_added)
+	      || l->l_info[DT_SONAME] == NULL)
+	    continue;
+
+	  soname = ((const char *) D_PTR (l, l_info[DT_STRTAB])
+		    + l->l_info[DT_SONAME]->d_un.d_val);
+	  if (strcmp (name, soname) != 0)
+	    continue;
+
+	  /* We have a match on a new name -- cache it.  */
+	  add_name_to_object (l, soname);
+	  l->l_soname_added = 1;
+	}
+
+      /* We have a match.  */
+      return l;
+    }
+
+  return NULL;
+}
+
 /* Map in the shared object file NAME.  */
 
 struct link_map *
