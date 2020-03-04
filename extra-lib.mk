@@ -101,8 +101,36 @@ $(objpfx)$(lib).so: $(firstword $($(lib)-map) \
 				$(addprefix $(common-objpfx), \
 					    $(filter $(lib).map, \
 						     $(version-maps))))
-endif
 
+############################################################################
+# the following have had all functional contents merged back into libc and
+# are no longer considered part of the implicitly DF_GNU_1_UNIQUE cluster:
+#    nptl/libpthread htl/libpthread dlfcn/libdl login/libutil resolv/libanl
+
+# NOTE: the mechanisms are reversed depending on linker support:
+# If linker support is present, libraries get the unique flag by default and we
+# _suppress_ this with the -z nounique parameter.
+# If linker support is absent then the flag is _added_ via a hacked up extra
+# object from the elf/ subdir to those DSOs that need it.
+
+# The not-df-gnu-unique variable should contain a space separated list of
+# stub library names (eg pthread for libpthread.so) of extra-libs which should
+# NOT have the uniqueness flag.
+# It should be set in the Makefile of the relevant subdir:
+ifneq ($(ld-zunique),yes)
+ifeq (,$(strip $(filter $(not-df-gnu-unique),$(lib))))
+$(objpfx)$(lib).so: $(common-objpfx)/elf/dynamic-notes.os
+else
+endif
+else
+ifneq (,$(strip $(filter $(not-df-gnu-unique),$(lib))))
+LDFLAGS-$(patsubst lib%,%,$(lib)).so += -Wl,-z,nounique
+else
+endif
+endif
+############################################################################
+
+endif
 endif
 
 # This will define `libof-ROUTINE := LIB' for each of the routines.

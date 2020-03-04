@@ -50,6 +50,7 @@ ifeq ($(have-GLIBC_2.33),yes)
 # Empty compatibility library for old binaries.
 extra-libs      := libutil
 extra-libs-others := $(extra-libs)
+not-df-gnu-unique := libutil
 libutil-routines := libutil-compat
 libutil-shared-only-routines := libutil-compat
 

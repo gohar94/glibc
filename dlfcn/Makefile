@@ -35,6 +35,7 @@ routines = \
   libc_dlerror_result \
 
 extra-libs-others := libdl
+not-df-gnu-unique := libdl
 
 libdl-shared-only-routines += libdl-compat
 

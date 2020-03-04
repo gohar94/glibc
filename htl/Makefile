@@ -169,6 +169,7 @@ shared-only-routines = forward
 
 extra-libs := libpthread
 extra-libs-others := $(extra-libs)
+not-df-gnu-unique :=
 install-lib := libpthread.so
 install-lib-ldscripts := libpthread_syms.a
 
@@ -202,6 +203,7 @@ $(inst_libdir)/libpthread_syms.a: $(srcdir)/libpthread_syms.a $(+force)
 libc-link.so = $(common-objpfx)libc.so
 
 extra-B-pthread.so = -B$(common-objpfx)htl/
+# Turn off DF_GNU_1_UNIQUE for libpthread now that it's a stub.
 LDFLAGS-pthread.so = -Wl,--enable-new-dtags,-z,nodelete,-z,initfirst
 
 include ../Rules

@@ -77,8 +77,10 @@ tests-internal += tst-inet_aton_exact
 generate := mtrace-tst-leaks.out tst-leaks.mtrace tst-leaks2.mtrace
 
 extra-libs := libresolv libnss_dns
+not-df-gnu-unique :=
 ifeq ($(have-thread-library),yes)
 extra-libs += libanl
+not-df-gnu-unique += libanl
 routines += gai_sigqueue
 
 tests += \

@@ -27,6 +27,7 @@ headers := pthread.h semaphore.h bits/semaphore.h \
 
 extra-libs := libpthread
 extra-libs-others := $(extra-libs)
+not-df-gnu-unique := libpthread
 
 routines = \
   alloca_cutoff \
@@ -375,7 +376,9 @@ CPPFLAGS-tst-pthread-gdb-attach-static.c := \
 # were launched with an explicit ld.so invocation.
 tst-pthread-gdb-attach-no-pie = yes
 
-tests += tst-cancelx7 tst-cancelx17
+LDFLAGS-pthread.so = -Wl,--enable-new-dtags,-z,nodelete,-z,initfirst
+
+tests += tst-cancelx7 tst-cancelx17 tst-cleanupx4
 
 ifeq ($(build-shared),yes)
 tests += tst-compat-forwarder tst-audit-threads
