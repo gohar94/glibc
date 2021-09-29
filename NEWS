@@ -9,6 +9,23 @@ Version 2.35
 
 Major new features:
 
+* New flag RTLD_SHARED for dlmopen. A DSO opened into a secondary
+  namespace with the RTLD_SHARED flag is opened in the default
+  namespace instead (if not present there already) and that copy is
+  shared with the target namespace.
+
+* New dynamic section DT_GNU_FLAGS_1 with a value DF_GNU_1_UNIQUE.
+  This flag indicates that the DSO marked with it should be treated
+  by dlmopen as if RTLD_SHARED had been passed.  The core libc DSOs
+  are all marked with this section and flag.
+
+  NOTE: This does not affect DSOs opened for the audit mechanism.
+
+* New flag RTLD_ISOLATE for dlmopen.  This flag suppresses the effect
+  of DT_GNU_FLAGS_1/DF_GNU_1_UNIQUE, allowing DSOs that would otherwise
+  be shared with the default namespace to be loaded as a separate copy
+  in the target namespace.
+
 * Unicode 14.0.0 Support: Character encoding, character type info, and
   transliteration tables are all updated to Unicode 14.0.0, using
   generator scripts contributed by Mike FABIAN (Red Hat).
