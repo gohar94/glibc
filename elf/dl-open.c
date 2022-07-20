@@ -104,6 +104,16 @@ add_to_global_resize (struct link_map *new)
     if (new->l_searchlist.r_list[cnt]->l_global == 0)
       ++to_add;
 
+  /* Patch taken from:
+     https://sourceware.org/bugzilla/show_bug.cgi?id=18684
+  */
+  if (__glibc_unlikely (new->l_ns != LM_ID_BASE
+ 		&& ns->_ns_main_searchlist == NULL))
+    {
+      ns->_ns_main_searchlist = &new->l_searchlist;
+      ns->_ns_global_scope_alloc = 0;
+    }
+
   /* The symbols of the new objects and its dependencies are to be
      introduced into the global scope that will be used to resolve
      references from other dynamically-loaded objects.

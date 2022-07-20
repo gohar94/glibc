@@ -23,6 +23,8 @@
 #define __need_size_t
 #include <stddef.h>
 
+#pragma GCC diagnostic ignored "-Warray-bounds"
+
 /* Collect various system dependent definitions and declarations.  */
 #include <bits/dlfcn.h>
 
