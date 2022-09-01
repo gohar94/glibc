@@ -373,7 +373,8 @@ _dl_profile_fixup (
 	    }
 	  else
 	    /* Set all bits since this symbol binding is not interesting.  */
-	    reloc_result->enterexit = (1u << DL_NNS) - 1;
+	    // TODO(gohar): Make sure this is correct; now DL_NSS is not 16 but we need to follow the bit-width
+	    reloc_result->enterexit = (1u << 16) - 1;
 	}
 #endif
 
